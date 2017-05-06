@@ -1,15 +1,13 @@
 package com.mycompany.bhsit.database;
 
-import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /*
  * @author cgb_000
  */
-public class OtherHardware {
+public class OtherHardware{
     private String type;
     private String make;
     private String model;
@@ -25,7 +23,7 @@ public class OtherHardware {
         return otherhardware;
     }
     
-    public void SetOtherhardware(final String computers){
+    public void SetOtherhardware(final String otherhardware){
         this.otherhardware = otherhardware;
     }
     
@@ -33,7 +31,7 @@ public class OtherHardware {
         return type;
     }
     
-    public void setType(final String id){
+    public void setType(final String type){
         this.type = type;
     }
     
@@ -41,7 +39,7 @@ public class OtherHardware {
         return make;
     }
     
-    public void setMake(final String compname){
+    public void setMake(final String make){
         this.make = make;
     }
     
@@ -49,9 +47,10 @@ public class OtherHardware {
         return model;
     }
     
-    public void setModel(final String os){
+    public void setModel(final String model){
         this.model = model;
     }
+    
     
     public String getIp(){
         return ip;
@@ -93,20 +92,28 @@ public class OtherHardware {
         this.notes = notes;
     }
     
-    public void delete(String id) throws SQLException{
-        if(id != null){
-            final String sql = "DELETE FROM otherhardware WHERE sernum = ?";
+    public void delete(OtherHardware selected) throws SQLException{
+        if(selected.getIp() != null){
+            final String sql = "DELETE FROM otherhardware WHERE othertype = ? AND othermake = ? AND othermodel = ? AND otherip = ? AND othersernum = ? AND otherdatepurch = ? AND otherstatus = ? AND othernotes = ?";
             try(Connection connection = DbHelper.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)){ 
-                pstmt.setString(1, id);
+                pstmt.setString(1, selected.getType());
+                pstmt.setString(2, selected.getMake());
+                pstmt.setString(3, selected.getModel());
+                pstmt.setString(4, selected.getIp());
+                pstmt.setString(5, selected.getSernum());
+                pstmt.setString(6, selected.getDatepurch());
+                pstmt.setString(7, selected.getStatus());
+                pstmt.setString(8, selected.getNotes());
                 pstmt.execute();
-                id = null;
+                selected.setIp(null);
             }
         }
     }
     // Enters values into the database using prepared statements
+    
     public void save() throws SQLException{
         
-        final String sql = "INSERT INTO otherhardware(type, make, model, ip, sernum, datepurch, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO otherhardware VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try(Connection connection = DbHelper.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)){
 
                 pstmt.setString(1, type);
@@ -119,48 +126,11 @@ public class OtherHardware {
                 pstmt.setString(8, notes);
                 pstmt.execute();
             }
-        /*try(Connection connection = DbHelper.getConnection()){
-            //int ids = Integer.parseInt(id);
-
-            if(id == null){
-                final String sql = "INSERT INTO computers(id, compname, os, ip, sernum, datepurch, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                try(PreparedStatement pstmt = connection.prepareStatement(sql)){
-
-                    pstmt.setString(1, id);
-                    pstmt.setString(2, compname);
-                    pstmt.setString(3, os);
-                    pstmt.setString(4, ip);
-                    pstmt.setString(5, sernum);
-                    pstmt.setString(6, datepurch);
-                    pstmt.setString(7, status);
-                    pstmt.setString(8, notes);
-                    pstmt.execute();
-                     
-                
-                }
-            }else{
-                //This might not run due to the tutorial's use of a gradually increasing ID and my use of a manually entered ID.
-                //If error persists, try to update the computers table without the id column.
-                final String sql = "UPDATE computers SET compname = ?, os = ?, ip = ?, sernum = ?, datepurch = ?, status = ?, notes = ? WHERE id = ?";
-                try(PreparedStatement pstmt = connection.prepareStatement(sql)){
-                    
-                    //pstmt.setString(1, id);
-                    pstmt.setString(1, compname);
-                    pstmt.setString(2, os);
-                    pstmt.setString(3, ip);
-                    pstmt.setString(4, sernum);
-                    pstmt.setString(5, datepurch);
-                    pstmt.setString(6, status);
-                    pstmt.setString(7, notes);
-                    pstmt.setString(8, id);
-                    pstmt.execute();
-                }    
-            }
-        }*/    
     }
     
+    
     public void update(String id) throws SQLException{
-        final String sql = "UPDATE otherhardware SET type = ?, make = ?, model = ?, ip = ?, datepurch = ?, status = ?, notes = ? WHERE sernum = ?";
+        final String sql = "UPDATE otherhardware SET othertype = ?, othermake = ?, othermodel = ?, otherip = ?, otherdatepurch = ?, otherstatus = ?, othernotes = ? WHERE othersernum = ?";
         try(Connection connection = DbHelper.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             //pstmt.setString(1, id);
@@ -171,9 +141,47 @@ public class OtherHardware {
             pstmt.setString(5, datepurch);
             pstmt.setString(6, status);
             pstmt.setString(7, notes);
-            pstmt.setString(8, id);
+            //pstmt.setString(8, id);
             pstmt.execute();
         }  
+    }
+    
+    public void Inserts() throws SQLException{
+        
+        final String sql = "INSERT INTO otherhardware VALUES ('Mouse', 'Logitech', 'Lightning', '127.0.0.1', '84RG8F7Y8', '2009-09-09', 'Storage', 'Room 123')";
+            try(Connection connection = DbHelper.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)){
+                pstmt.execute();
+            }   
+    }
+    
+    @Override
+    public String toString(){
+        final StringBuilder formatted = new StringBuilder();
+        if(type == null){
+            formatted.append("[No ID] ");
+        } else {
+            formatted.append("[").append(type).append("] ");
+        }
+        
+        if(make == null){
+            formatted.append("no Name ");
+        }else{
+            formatted.append(make).append(" ");
+        }
+        
+        if(model == null){
+            formatted.append("no Model");
+        }else{
+            formatted.append(" [").append(model).append("] ");
+        }
+        
+        if(status == null){
+            formatted.append("no Status ");
+        }else{
+            formatted.append(" [").append(status).append("] ");
+        }
+        
+        return formatted.toString();
     }
 }
 

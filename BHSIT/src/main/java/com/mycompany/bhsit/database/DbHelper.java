@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Level;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.flywaydb.core.Flyway;
@@ -55,8 +54,10 @@ public class DbHelper{
         LOGGER.debug("Executing Flyway (database migration)");
         Flyway flyway = new Flyway();
         flyway.setDataSource(ds);
-        //flyway.repair();
+        //flyway.validateOnMigrate=true;
+        flyway.repair();
         flyway.migrate();
+        
     }
     
     // Closes connection to the Data Source

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.bhsit.database;
 
 import java.sql.SQLException;
@@ -24,12 +19,12 @@ public class ComputersHelper {
         return ComputersHelper.INSTANCE;
     }
     
-    private ComputersHelper(){
+    public ComputersHelper(){
     }
     
     public List<Computers> getComputers() throws SQLException{
         final List<Computers> computers = new ArrayList<>();
-        final String sql = "SELECT * FROM computers ORDER BY id";
+        final String sql = "SELECT * FROM computers ORDER BY compid";
         
         try(Connection connection = DbHelper.getConnection();
             PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -37,17 +32,30 @@ public class ComputersHelper {
         
             while(rs.next()){
                 final Computers computer = new Computers();
-                computer.setId(rs.getString("id"));
+                computer.setId(rs.getString("compid"));
                 computer.setCompname(rs.getString("compname"));
-                computer.setOs(rs.getString("os"));
-                computer.setIp(rs.getString("ip"));
-                computer.setSernum(rs.getString("sernum"));
-                computer.setDatepurch(rs.getString("datepurch"));
-                computer.setStatus(rs.getString("status"));
-                computer.setNotes(rs.getString("notes"));
+                computer.setOs(rs.getString("compos"));
+                computer.setIp(rs.getString("compip"));
+                computer.setSernum(rs.getString("compsernum"));
+                computer.setDatepurch(rs.getString("compdatepurch"));
+                computer.setStatus(rs.getString("compstatus"));
+                computer.setNotes(rs.getString("compnotes"));
                 //computer.setComputers(rs.getString("computers"));
                 computers.add(computer);
             }  
+        }
+        return computers;
+    }
+    
+    public int getLaunch() throws SQLException{
+        final int computers;
+        final String sql = "SELECT * FROM launch";
+        
+        try(Connection connection = DbHelper.getConnection();
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()){
+                rs.next();
+                computers = rs.getInt("launch");  
         }
         return computers;
     }

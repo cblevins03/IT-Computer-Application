@@ -1,0 +1,1 @@
+INSERT INTO launch VALUES (0);

@@ -1,15 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.bhsit.database;
 
-import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /*
  * @author cgb_000
@@ -98,6 +91,8 @@ public class Computers {
         this.notes = notes;
     }
     
+    
+    
     @Override
     public String toString(){
         final StringBuilder formatted = new StringBuilder();
@@ -112,30 +107,6 @@ public class Computers {
         }else{
             formatted.append(compname).append(" ");
         }
-        
-        /*if(os == null){
-            formatted.append("no Operating System ");
-        }else{
-            formatted.append(" (").append(os).append(") ");
-        }
-        
-        if(ip == null){
-            formatted.append("no IP ");
-        }else{
-            formatted.append(ip).append(" ");
-        }
-        
-        if(sernum == null){
-            formatted.append("no Serial ");
-        }else{
-            formatted.append(" [").append(sernum).append("] ");
-        }
-        
-        if(datepurch == null){
-            formatted.append("no Date ");
-        }else{
-            formatted.append(datepurch).append(" ");
-        }*/
         
         if(status == null){
             formatted.append("no Status ");
@@ -152,20 +123,27 @@ public class Computers {
         return formatted.toString();
     }
     
-    public void delete() throws SQLException{
-        if(id != null){
-            final String sql = "DELETE FROM computers WHERE id = ?";
+    public void delete(Computers selected) throws SQLException{
+        if(selected.getId() != null){
+            final String sql = "DELETE FROM computers WHERE compid = ? AND compname = ? AND compos = ? AND compip = ? AND compsernum = ? AND compdatepurch = ? AND compstatus = ? AND compnotes = ?";
             try(Connection connection = DbHelper.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)){ 
-                pstmt.setString(1, id);
+                pstmt.setString(1, selected.getId());
+                pstmt.setString(2, selected.getCompname());
+                pstmt.setString(3, selected.getOs());
+                pstmt.setString(4, selected.getIp());
+                pstmt.setString(5, selected.getSernum());
+                pstmt.setString(6, selected.getDatepurch());
+                pstmt.setString(7, selected.getStatus());
+                pstmt.setString(8, selected.getNotes());
                 pstmt.execute();
-                id = null;
+                selected.setId(null);
             }
         }
     }
     // Enters values into the database using prepared statements
     public void save() throws SQLException{
         
-        final String sql = "INSERT INTO computers(id, compname, os, ip, sernum, datepurch, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO computers VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try(Connection connection = DbHelper.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)){
 
                 pstmt.setString(1, id);
@@ -177,49 +155,11 @@ public class Computers {
                 pstmt.setString(7, status);
                 pstmt.setString(8, notes);
                 pstmt.execute();
-            }
-        /*try(Connection connection = DbHelper.getConnection()){
-            //int ids = Integer.parseInt(id);
-
-            if(id == null){
-                final String sql = "INSERT INTO computers(id, compname, os, ip, sernum, datepurch, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                try(PreparedStatement pstmt = connection.prepareStatement(sql)){
-
-                    pstmt.setString(1, id);
-                    pstmt.setString(2, compname);
-                    pstmt.setString(3, os);
-                    pstmt.setString(4, ip);
-                    pstmt.setString(5, sernum);
-                    pstmt.setString(6, datepurch);
-                    pstmt.setString(7, status);
-                    pstmt.setString(8, notes);
-                    pstmt.execute();
-                     
-                
-                }
-            }else{
-                //This might not run due to the tutorial's use of a gradually increasing ID and my use of a manually entered ID.
-                //If error persists, try to update the computers table without the id column.
-                final String sql = "UPDATE computers SET compname = ?, os = ?, ip = ?, sernum = ?, datepurch = ?, status = ?, notes = ? WHERE id = ?";
-                try(PreparedStatement pstmt = connection.prepareStatement(sql)){
-                    
-                    //pstmt.setString(1, id);
-                    pstmt.setString(1, compname);
-                    pstmt.setString(2, os);
-                    pstmt.setString(3, ip);
-                    pstmt.setString(4, sernum);
-                    pstmt.setString(5, datepurch);
-                    pstmt.setString(6, status);
-                    pstmt.setString(7, notes);
-                    pstmt.setString(8, id);
-                    pstmt.execute();
-                }    
-            }
-        }*/    
+            }   
     }
     
     public void update(String id) throws SQLException{
-        final String sql = "UPDATE computers SET compname = ?, os = ?, ip = ?, sernum = ?, datepurch = ?, status = ?, notes = ? WHERE id = ?";
+        final String sql = "UPDATE computers SET compname = ?, compos = ?, compip = ?, compsernum = ?, compdatepurch = ?, compstatus = ?, compnotes = ? WHERE compid = ?";
         try(Connection connection = DbHelper.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)){
 
             //pstmt.setString(1, id);
@@ -233,6 +173,22 @@ public class Computers {
             pstmt.setString(8, id);
             pstmt.execute();
         }  
+    }
+    
+    public void Inserts() throws SQLException{
+        
+        final String sql = "INSERT INTO computers VALUES ('5789', 'maclibrary', 'OS X', '127.0.0.1', '84RG8F7Y8', '2009-09-09', 'Use', 'Room 305')";
+            try(Connection connection = DbHelper.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)){
+                pstmt.execute();
+            }   
+    }
+    
+    public void SetLaunch(int launch) throws SQLException{
+        
+        final String sql = "UPDATE launch SET launch = '" + launch + "'";
+            try(Connection connection = DbHelper.getConnection(); PreparedStatement pstmt = connection.prepareStatement(sql)){
+                pstmt.execute();
+            }   
     }
 }
 
